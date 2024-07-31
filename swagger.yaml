@@ -113,7 +113,7 @@ paths:
         '500':
           description: Internal Server Error
   /transactions:
-    post:
+    get:
       security:
         - Bearer: []
       tags:
@@ -146,7 +146,7 @@ paths:
         - application/json    
       responses:
         '200':
-          description: User transactions retrieved successully
+          description: User transactions retrieved successfully
           schema:
             type: array
             items:
@@ -155,8 +155,9 @@ paths:
           description: Invalid Fields
         '500':
           description: Internal Server Error
+
   /transactions/{transactionId}:
-    post:
+    get:
       security:
         - Bearer: []
       tags:
@@ -179,13 +180,14 @@ paths:
        - application/json  
       responses:
         '200':
-          description: Transaction retrieved successully
+          description: Transaction retrieved successfully
           schema:
             $ref: '#/definitions/Transaction'
         '404':
           description: Invalid fields
         '500':
           description: Internal Server Error
+    
     put:
       security:
         - Bearer: []
@@ -227,11 +229,75 @@ paths:
           description: Invalid fields
         '500':
           description: Internal Server Error
+
+    delete:
+      security:
+        - Bearer: []
+      tags:
+        - User transaction
+      summary: Delete transaction
+      description: Delete a specific transaction
+      operationId: deleteTransaction
+      parameters:
+        - name: Authorization
+          in: header
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - name: transactionId
+          in: path
+          description: Attach Id transaction
+          required: true
+          type: string
+      produces:
+       - application/json  
+      responses:
+        '200':
+          description: Transaction deleted successfully
+        '404':
+          description: Invalid fields
+        '500':
+          description: Internal Server Error
+
+  /transaction:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - User transaction
+      summary: Create transaction
+      description: Create a new transaction
+      operationId: createTransaction
+      parameters:
+        - name: Authorization
+          in: header
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Transaction object that needs to be added
+          required: true
+          schema:
+            $ref: '#/definitions/Transaction'
+      produces:
+        - application/json  
+      responses:
+        '200':
+          description: Transaction created successfully
+          schema:
+            $ref: '#/definitions/Transaction'
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal Server Error
+
 securityDefinitions:
   Bearer:
     type: apiKey
     name: Authorization
     in: header
+
 definitions:
   User:
     properties:
@@ -282,38 +348,38 @@ definitions:
       lastName:
         type: string
   Transaction:
-      type: object
-      properties:
-        Status:
-          type: integer
-          format: '0'
-        Message:
-          type: string
-          format: User transactions retrieved successully
-        Id:
-          type: string
-          format: int64
-        Date:
-          type: string
-          format: date
-          description: Transaction date 
-        Description:
-          type: string
-          description: Account associated with the transaction
-        Amount:
-          type: number
-          format: float
-          description: Transaction amount
-        Balance:
-          type: number
-          format: float
-          description: Balance amount
-        Transaction type:
-          type: string
-          description: Transaction description
-        Category:
-          type: string
-          description: Transaction category
-        Notes:
-          type: string
-          description: Transaction note
+    type: object
+    properties:
+      Status:
+        type: integer
+        format: '0'
+      Message:
+        type: string
+        format: User transactions retrieved successfully
+      Id:
+        type: string
+        format: int64
+      Date:
+        type: string
+        format: date
+        description: Transaction date 
+      Description:
+        type: string
+        description: Account associated with the transaction
+      Amount:
+        type: number
+        format: float
+        description: Transaction amount
+      Balance:
+        type: number
+        format: float
+        description: Balance amount
+      TransactionType:
+        type: string
+        description: Transaction description
+      Category:
+        type: string
+        description: Transaction category
+      Notes:
+        type: string
+        description: Transaction note
